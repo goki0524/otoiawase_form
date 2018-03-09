@@ -12,10 +12,11 @@
   $dbh->query('SET NAMES utf8');
 
   // ２．SQL文を実行する
-  $sql = "INSERT INTO `inquiries` SET `nickname`='${nickname}', `email`='${email}', `content`='${content}'";
+  $sql = "INSERT INTO `inquiries` (`nickname`, `email`, `content`) VALUES ( ?, ?, ?)";
 
+  $data = array($nickname,$email,$content);
   $stmt = $dbh->prepare($sql);
-  $stmt->execute();
+  $stmt->execute($data);
 
   // ３．データベースを切断する
   $dbh = null;
