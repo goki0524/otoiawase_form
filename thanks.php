@@ -1,7 +1,24 @@
-<?php
-  $nickname = $_POST['nickname'];
-  $email = $_POST['email'];
-  $content = $_POST['content'];
+ <?php
+  // フォームからPOST送信で受け取った情報をサニタイズし変数へ代入
+  $nickname = htmlspecialchars($_POST['nickname']);
+  $email = htmlspecialchars($_POST['email']);
+  $content = htmlspecialchars($_POST['content']);
+
+  // １．データベースに接続する
+  $dsn = 'mysql:dbname=phpkiso;host=localhost';
+  $user = 'root';
+  $password='';
+  $dbh = new PDO($dsn, $user, $password);
+  $dbh->query('SET NAMES utf8');
+
+  // ２．SQL文を実行する
+  $sql = "INSERT INTO `inquiries` SET `nickname`='${nickname}', `email`='${email}', `content`='${content}'";
+
+  $stmt = $dbh->prepare($sql);
+  $stmt->execute();
+
+  // ３．データベースを切断する
+  $dbh = null;
 ?>
 <!DOCTYPE html>
 <html lang="ja">
