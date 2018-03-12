@@ -46,6 +46,7 @@ if(isset($_POST) && !empty($_POST['content'])){
   <input type="submit" value="検索">
 </form>
 <?php 
+if(isset($line)){
    foreach ($line as $v) {
   // echo $v;
    echo "<hr>";
@@ -55,6 +56,7 @@ if(isset($_POST) && !empty($_POST['content'])){
    echo $v["content"]."<br>";
   }  
   echo "<hr>";
+}
  ?>
 </body>
 </html>
