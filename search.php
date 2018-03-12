@@ -1,3 +1,28 @@
+<!-- ここからPHPコードを記述する -->
+<?php
+//POST送信が行われたらDB接続し、データを取得
+if(isset($_POST) && !empty($_POST['id'])){
+  // １．データベースに接続する
+  $dsn = 'mysql:dbname=phpkiso;host=localhost';
+  $user = 'root';
+  $password = '';
+  $dbh = new PDO($dsn, $user, $password);
+  $dbh->query('SET NAMES utf8');
+
+  // ２．SQL文を実行する
+  $sql = 'SELECT * FROM `inquiries` WHERE `id` = '. $_POST['id'];
+  // SQLを実行
+  $stmt = $dbh->prepare($sql);
+  $stmt->execute();
+
+  //データの取得
+  $rec = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+  // ３．データベースを切断する
+  $dbh = null;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -6,45 +31,18 @@
 </head>
 <body>
   <form action="" method="post">
-  <p>検索したいnicknameを入力してください。</p>
-  <input type="text" name="nickname">
+  <p>検索したいidを入力してください。</p>
+  <input type="text" name="id">
   <input type="submit" value="検索">
 </form>
-<!-- ここからPHPコードを記述する -->
-<?php
-  // １．データベースに接続する
-  $dsn = 'mysql:dbname=phpkiso;host=localhost';
-  $user = 'root';
-  $password = '';
-  $dbh = new PDO($dsn, $user, $password);
-  $dbh->query('SET NAMES utf8');
 
-  // POSTでデータが送信された時のみSQLを実行する
-  if (!empty($_POST)) {
-    // ２．SQL文を実行する
-    $sql = 'SELECT * FROM `inquiries` WHERE `nickname` = ' . $_POST['nickname'];
-    // SQLを実行
-    $stmt = $dbh->prepare($sql);
-    $stmt->execute();
-
-    // データを取得する
-    while (1) {
-      $rec = $stmt->fetch(PDO::FETCH_ASSOC);
-      if ($rec == false) {
-        break;
-      }
-      echo $rec['nickname'] . '<br>';
-      echo $rec['email'] . '<br>';
-      echo $rec['content'] . '<br>';
-      echo '<hr>';
-    }
-  }
-
-  // ３．データベースを切断する
-  $dbh = null;
-?>
-
-
+  <?php if(isset($rec)){ ?>
+    <hr>
+      <?php echo $rec["id"]; ?><br>
+      <?php echo $rec["nickname"]; ?><br>
+      <?php echo $rec["email"]; ?><br>
+      <?php echo $rec["content"]; ?><br>
+  <?php } ?>
 
 </body>
 </html>
